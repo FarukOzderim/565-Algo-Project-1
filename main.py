@@ -1,9 +1,9 @@
 import sys
 
 # Helper function for reading file input
-def get_input(filename):
+def get_input(filename_in):
     # Read the lines from the file
-    in_file = open(filename, 'r')
+    in_file = open(filename_in, 'r')
     lines = in_file.readlines()
     in_file.close()
 
@@ -56,13 +56,49 @@ def get_input(filename):
     return problem_list
 
 
+# Helper function for writing all solutions to output
+def write_output(data_out, filename_out):
+    # Create storage for output
+    all_data = []
+    # Process all problems
+    for prob in data_out:
+        # Get number of leaves and edges
+        leaves = 0
+        edges = 0
+        for vert in prob:
+            if len(prob[vert]) == 1:
+                leaves += 1
+            edges += len(prob[vert])
+        edges //= 2 # We count each edge twice, so divide by 2
 
-def write_output(data_out):
-    print("File output not implemented")
+        # Remove duplicate edges
+        for vert in prob:
+            for item in prob[vert]:
+                prob[item].remove(vert)
+        
+        # Put everything in the list for output
+        all_data.append((leaves, edges))
+        for vert in prob:
+            for item in prob[vert]:
+                all_data.append((vert, item))
+
+    # Format output as strings
+    all_lines = []
+    for line in all_data:
+        all_lines.append("{} {}\n".format(line[0], line[1]))
+    all_lines[-1] = all_lines[-1].strip()
+    
+    # Write output
+    out_file = open(filename_out, 'w')
+    out_file.writelines(all_lines)
+    out_file.close
 
 
 # Main function here
 if __name__ == "__main__":
+    # Debug flags
+    print_input = False
+    print_output = False
     # Set filenames for input and output
     file_in = "./hard.in"
     file_out = "./hard.out"
@@ -74,14 +110,28 @@ if __name__ == "__main__":
     # Get the input from file
     data_in = get_input(file_in)
     # Print out problems for sanity
-    counter = 1
-    for problem in data_in:
-        print("Problem {}: {}".format(counter, problem))
-        counter += 1
+    if print_input:
+        counter = 1
+        for problem in data_in:
+            print("Problem {}: {}".format(counter, problem))
+            counter += 1
 
     # Here is where we would actually run our algorithm
     # For now, just hardcode the given results
     data_out = data_in
+    # First problem removes edge (0, 2)
+    data_out[0][0].remove(2)
+    data_out[0][2].remove(0)
+    # Second problem removes edge (0, 1)
+    data_out[1][0].remove(1)
+    data_out[1][1].remove(0)
+    # Print solved problems for sanity
+    if print_output:
+        counter = 1
+        for problem in data_out:
+            print("Problem {}: {}".format(counter, problem))
+            counter += 1
+
 
     # Write our algorithm's output to a file
-    #write_output(data_out)
+    write_output(data_out, file_out)
