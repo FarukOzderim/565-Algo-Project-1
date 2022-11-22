@@ -94,6 +94,69 @@ def write_output(data_out, filename_out):
     out_file.close
 
 
+# Simple greedy approach to the problem
+# Likely to be used as a baseline
+def simple_greedy(prob_in):
+    # Create a copy of the problem and get some metadata
+    prob_copy = prob_in.copy()
+    num_verts = len(prob_copy)
+    # Create an empty tree to build
+    tree = {}
+    for i in range(num_verts):
+        tree[i] = []
+    in_tree = [False for i in range(num_verts)]
+    # Need a list of candidates
+    candidates = []
+
+    # Find the root node
+    root_vert = 0
+    root_ecount = len(prob_copy[root_vert])
+    for i in range(1, num_verts):
+        if len(prob_copy[i]) > root_ecount:
+            root_vert = i
+            root_ecount = len(prob_copy[i])
+    candidates.append(root_vert)
+    
+    # Keep adding to tree until we run out
+    while len(candidates) > 0:
+        # Get ideal candidate and remove from list
+        best = candidates[0]
+        best_ecount = len(prob_copy[best])
+        for i in candidates:
+            if len(prob_copy[i]) > best_ecount:
+                best = i
+                best_ecount = len(prob_copy[i])
+        candidates.remove(best)
+        #print("Ideal candidate: {}".format(best))
+
+        # Add ideal candidate's children to tree and list of candidates
+        best_elist = prob_copy[best]
+        in_tree[best] = True
+        for item in best_elist:
+            if not in_tree[item]:
+                in_tree[item] = True
+                tree[best].append(item)
+                tree[item].append(best)
+                candidates.append(item)
+        #print("Candidate list 1: {}".format(candidates))
+
+        # Prune candidates with no valid children
+        c_copy = candidates.copy()
+        for item in c_copy:
+            adj_list = prob_copy[item]
+            has_valid = False
+            for child in adj_list:
+                if not in_tree[child]:
+                    has_valid = True
+                    continue
+            if not has_valid:
+                candidates.remove(item)
+        #print("Candidate list 2: {}".format(candidates))
+
+    # Return the spanning tree
+    return tree
+
+
 # Main function here
 if __name__ == "__main__":
     # Debug flags
@@ -109,29 +172,23 @@ if __name__ == "__main__":
 
     # Get the input from file
     data_in = get_input(file_in)
-    # Print out problems for sanity
+    # Print input problems for sanity
     if print_input:
         counter = 1
         for problem in data_in:
             print("Problem {}: {}".format(counter, problem))
             counter += 1
 
-    # Here is where we would actually run our algorithm
-    # For now, just hardcode the given results
-    data_out = data_in
-    # First problem removes edge (0, 2)
-    data_out[0][0].remove(2)
-    data_out[0][2].remove(0)
-    # Second problem removes edge (0, 1)
-    data_out[1][0].remove(1)
-    data_out[1][1].remove(0)
+    # Run our algorithm on all problems
+    data_out = []
+    for prob in data_in:
+        data_out.append(simple_greedy(prob))
     # Print solved problems for sanity
     if print_output:
         counter = 1
-        for problem in data_out:
-            print("Problem {}: {}".format(counter, problem))
+        for prob in data_out:
+            print("Problem {}: {}".format(counter, prob))
             counter += 1
-
 
     # Write our algorithm's output to a file
     write_output(data_out, file_out)
