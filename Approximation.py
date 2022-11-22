@@ -54,35 +54,6 @@ def buildMaximallyLeafyForest(noofvertices,G):
 parent1 = list(np.zeros(100005,))
 size1 = list(np.zeros(100005,))
 
-def findparent1(x):
-    
-    if(parent[x] == x):
-        return x
-    parent1[x] = findparent1(parent1[x])
-    return parent1[x]
-
-def unionbyrank1(u,v):
-    a = findparent1(u)
-    b = findparent1(v)
-    if(a!=b):
-        if(size1[a] > size1[b]):
-            parent1[b] = a
-            size1[a] = size1[a] + size1[b]
-        else:
-            parent1[a] = b
-            size1[b] = size1[a] + size1[b]
-
-def kruskal(noofvertices,F):
-    spanningtree = []
-    for i in range(noofvertices):
-        parent1[i] = i
-    for i in F:
-        x = i[0]
-        y = i[1]
-        if(findparent1(x) != findparent1(y)):
-            spanningtree.append([x,y])
-            unionbyrank1(x,y)
-    return spanningtree
 
 
 if __name__ == "__main__":
@@ -106,25 +77,3 @@ if __name__ == "__main__":
     
     F = buildMaximallyLeafyForest(noofvertices,G)
     print(F)
-    verticesinF = []
-
-    for i in F:
-        verticesinF.append(i[0])
-        verticesinF.append(i[1])
-
-    
-    for i in range(noofvertices):
-        for j in range(len(G[i])):
-            u = i
-            v = G[i][j]
-
-            if(u not in verticesinF and v not in verticesinF):
-              F.append([u,v])
-              F.append([v,u])
-
-            elif(findparent(u) != findparent(v)):
-              F.append([u,v])
-              F.append([v,u])
-
-        result = kruskal(noofvertices,F)
-        print("Result : ",result)
