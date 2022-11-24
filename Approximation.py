@@ -40,15 +40,11 @@ def buildMaximallyLeafyForest(noofvertices,G):
             if(findparent(u) != findparent(v) and [u,findparent(u)] not in s1):
                 d1 = d1 + 1
                 s1.append([u,findparent(u)])
-                # s1 = s1.update({u : findparent(u)})
+                
     
         if(d[v] + d1 >= 3):
             for i in s1:
-                # F.update({v : i})
-                # F.update({i :  v})
-                # unionbyrank(v,s1.get(i))
-                # d[i] = d[i] + 1
-                # d[v] = d[v] + 1
+          
                 F.append([v,i[0]])
                 F.append([i[0],v]) 
                 unionbyrank(v,i[1])
