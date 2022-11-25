@@ -1,38 +1,40 @@
 """
 Contains multiple algorithms for Max Leaf Spanning Tree problem. Each problem takes adjacency matrix as the input
 and returns
-1. tree(adjacency matrix or adjacency list TBD)
-2. number of leaves
+1. tree(adjacency list)
+2. number of leaves and vertices
 """
+
+from typing import List
 
 
 class SimpleGreedy:
     @staticmethod
-    def solve(prob_in):
+    def solve(prob_in: dict) -> dict:
         """
         Simple greedy solution, similar to BFS.
 
         Args:
-            prob_in:
+            prob_in: adjacency_list
 
         Returns:
 
         """
         # Create a copy of the problem and get some metadata
         prob_copy = prob_in.copy()
-        num_verts = len(prob_copy)
+        vertex_count = len(prob_copy)
         # Create an empty tree to build
         tree = {}
-        for i in range(num_verts):
+        for i in range(vertex_count):
             tree[i] = []
-        in_tree = [False for i in range(num_verts)]
+        in_tree = [False for i in range(vertex_count)]
         # Need a list of candidates
         candidates = []
 
         # Find the root node
         root_vert = 0
         root_ecount = len(prob_copy[root_vert])
-        for i in range(1, num_verts):
+        for i in range(1, vertex_count):
             if len(prob_copy[i]) > root_ecount:
                 root_vert = i
                 root_ecount = len(prob_copy[i])

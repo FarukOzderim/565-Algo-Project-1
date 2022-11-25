@@ -1,12 +1,16 @@
 import sys
+from typing import List
+import numpy as np
+import networkx as nx
+from matplotlib import pyplot as plt
 
 
-def read_input(filename_in: str):
+def read_input(input_filename: str) -> List[dict]:
     """
     Reads graphs from the file and creates adjacency lists.
 
     Args:
-        filename_in: file name
+        input_filename: file name
 
     Returns:
         adjacency_lists
@@ -14,7 +18,7 @@ def read_input(filename_in: str):
     """
 
     # Read the lines from the file
-    in_file = open(filename_in, "r")
+    in_file = open(input_filename, "r")
     lines = in_file.readlines()
     in_file.close()
 
@@ -68,11 +72,19 @@ def read_input(filename_in: str):
 
 
 # Helper function for writing all solutions to output
-def write_output(data_out, filename_out):
+def write_output(adjacency_lists: List[dict], output_filename: str):
+    """
+    Writes output to file in output convention. Check the pdf for details.
+
+    Args:
+        adjacency_lists:
+        output_filename:
+    """
+
     # Create storage for output
     all_data = []
     # Process all problems
-    for prob in data_out:
+    for prob in adjacency_lists:
         # Get number of leaves and edges
         leaves = 0
         edges = 0
@@ -100,43 +112,50 @@ def write_output(data_out, filename_out):
     all_lines[-1] = all_lines[-1].strip()
 
     # Write output
-    out_file = open(filename_out, "w")
+    out_file = open(output_filename, "w")
     out_file.writelines(all_lines)
     out_file.close()
 
 
-# Main function here
-if __name__ == "__main__":
-    # Debug flags
-    print_input = False
-    print_output = False
-    # Set filenames for input and output
-    file_in = "inputs_outputs/hard.in"
-    file_out = "inputs_outputs/hard.out"
-    if len(sys.argv) > 1:
-        file_in = sys.argv[1]
-    if len(sys.argv) > 2:
-        file_out = sys.argv[2]
+def convert_adjacency_list_to_matrix(dic: dict) -> List[List[int]]:
+    vertix_count = len(dic)
+    matrix = [[0] * vertix_count for _ in range(vertix_count)]
+    for key, values in dic.items():
+        for value in values:
+            matrix[key][value] = 1
+    return matrix
 
-    # Get the input from file
-    data_in = get_input(file_in)
-    # Print input problems for sanity
-    if print_input:
-        counter = 1
-        for problem in data_in:
-            print("Problem {}: {}".format(counter, problem))
-            counter += 1
 
-    # Run our algorithm on all problems
-    data_out = []
-    for prob in data_in:
-        data_out.append(simple_greedy(prob))
-    # Print solved problems for sanity
-    if print_output:
-        counter = 1
-        for prob in data_out:
-            print("Problem {}: {}".format(counter, prob))
-            counter += 1
+def convert_adjacency_matrix_to_list(matrix: List[List[int]]) -> dict:
+    dic = {}
+    for vertex, neighbours in enumerate(matrix):
+        print(neighbours, vertex)
+        dic[vertex] = []
+        for index, neighbour in enumerate(neighbours):
+            if neighbour == 1:
+                dic[vertex].append(index)
+    return dic
 
-    # Write our algorithm's output to a file
-    write_output(data_out, file_out)
+
+def create_graph_from_matrix(matrix: List[List[int]]) -> nx.Graph:
+    graph = nx.from_numpy_array(np.matrix(matrix))
+    return graph
+
+
+def get_adjacency_matrix_from_graph(graph: nx.Graph) -> List[List[int]]:
+    return nx.adjacency_matrix(graph).todense()
+
+
+def plot_graph(graph_1: nx.Graph, graph_2: nx.Graph, title: str = ""):
+    fig, axs = plt.subplots(1, 2)
+    nx.draw_networkx(graph_1, ax=axs[0])
+    nx.draw_networkx(graph_2, ax=axs[1])
+    plt.title(title)
+    plt.show()
+
+
+def plot_graph_from_adjacency_list(dic_1: dict, dic_2: dict, title: str):
+    plot_graph(
+        create_graph_from_matrix(convert_adjacency_list_to_matrix(dic_1)),
+        create_graph_from_matrix(convert_adjacency_list_to_matrix(dic_2)), title=title
+    )
