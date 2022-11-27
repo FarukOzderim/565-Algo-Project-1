@@ -42,7 +42,7 @@ if __name__ == "__main__":
     solution_list = []
 
     for prob in problem_list:
-        solution_list.append(Approximationalgo().solve(prob))
+        solution_list.append(Approximationalgo.solve(prob))
 
     # Print solved problems for sanity
     if DEBUG:
