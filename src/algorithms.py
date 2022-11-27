@@ -83,58 +83,98 @@ class SimpleGreedy:
 
 
 class Approximationalgo:
-    def __init__(self):
-        self.parent = list(
+
+    parent = list(
+        np.zeros(
+            100,
+        )
+    )
+    d = list(
+        np.zeros(
+            100,
+        )
+    )
+    size = list(
+        np.zeros(
+            100,
+        )
+    )
+    find_parent_special = list(
+        np.zeros(
+            100,
+        )
+    )
+    size1 = list(
+        np.zeros(
+            100,
+        )
+    )
+
+    @staticmethod
+    def reset():
+        Approximationalgo.parent = list(
             np.zeros(
                 100,
             )
         )
-        self.d = list(
+        Approximationalgo.d = list(
             np.zeros(
                 100,
             )
         )
-        self.size = list(
+        Approximationalgo.size = list(
             np.zeros(
                 100,
             )
         )
-        self.parent1 = list(
+        Approximationalgo.find_parent_special = list(
             np.zeros(
                 100,
             )
         )
-        self.size1 = list(
+        Approximationalgo.size1 = list(
             np.zeros(
                 100,
             )
         )
 
-    def findparent(self, v):
-        if v == self.parent[v]:
+    @staticmethod
+    def findparent(v):
+
+        v = int(v)
+
+        if v == Approximationalgo.parent[v]:
             return v
-        self.parent[v] = self.findparent(self.parent[v])
-        return self.parent[v]
+        Approximationalgo.parent[v] = Approximationalgo.findparent(
+            Approximationalgo.parent[v]
+        )
+        return Approximationalgo.parent[v]
 
-    def unionbyrank(self, u, v):
-        a = self.findparent(u)
-        b = self.findparent(v)
+    @staticmethod
+    def unionbyrank(u, v):
+        a = Approximationalgo.findparent(u)
+        b = Approximationalgo.findparent(v)
         if a != b:
-            if self.size[a] > self.size[b]:
-                self.parent[b] = a
-                self.size[a] = self.size[a] + self.size[b]
+            if Approximationalgo.size[a] > Approximationalgo.size[b]:
+                Approximationalgo.parent[b] = a
+                Approximationalgo.size[a] = (
+                    Approximationalgo.size[a] + Approximationalgo.size[b]
+                )
             else:
-                self.parent[a] = b
-                self.size[b] = self.size[a] + self.size[b]
+                Approximationalgo.parent[a] = b
+                Approximationalgo.size[b] = (
+                    Approximationalgo.size[a] + Approximationalgo.size[b]
+                )
 
-    def buildMaximallyLeafyForest(self, noofvertices, G):
+    @staticmethod
+    def buildMaximallyLeafyForest(vertex_count, G):
         F = []
-        for i in range(noofvertices):
-            self.d[i] = 0
-            self.parent[i] = i
-            self.size[i] = 1
+        for i in range(vertex_count):
+            Approximationalgo.d[i] = 0
+            Approximationalgo.parent[i] = i
+            Approximationalgo.size[i] = 1
 
-        for i in range(noofvertices):
+        for i in range(vertex_count):
             s1 = []
             d1 = 0
 
@@ -142,86 +182,98 @@ class Approximationalgo:
             for j in range(len(G[i])):
                 u = G[i][j]
                 if (
-                    self.findparent(u) != self.findparent(v)
-                    and [u, self.findparent(u)] not in s1
+                    Approximationalgo.findparent(u) != Approximationalgo.findparent(v)
+                    and [u, Approximationalgo.findparent(u)] not in s1
                 ):
                     d1 = d1 + 1
-                    s1.append([u, self.findparent(u)])
-                    # s1 = s1.update({u : findparent(u)})
+                    s1.append([u, Approximationalgo.findparent(u)])
 
-            if self.d[v] + d1 >= 3:
-                for i in s1:
-                    # F.update({v : i})
-                    # F.update({i :  v})
-                    # unionbyrank(v,s1.get(i))
-                    # d[i] = d[i] + 1
-                    # d[v] = d[v] + 1
-                    F.append([v, i[0]])
-                    F.append([i[0], v])
-                    self.unionbyrank(v, i[1])
-                    self.d[i[0]] = self.d[i[0]] + 1
-                    self.d[v] = self.d[v] + 1
+            if Approximationalgo.d[v] + d1 >= 3:
+                for edge_pair in s1:
+
+                    F.append([v, edge_pair[0]])
+                    F.append([edge_pair[0], v])
+                    Approximationalgo.unionbyrank(v, edge_pair[1])
+                    Approximationalgo.d[edge_pair[0]] = (
+                        Approximationalgo.d[edge_pair[0]] + 1
+                    )
+                    Approximationalgo.d[v] = Approximationalgo.d[v] + 1
         return F
 
-    def findparent1(self, x):
-        if self.parent1[x] == x:
+    @staticmethod
+    def findfind_parent_special(x):
+        if Approximationalgo.find_parent_special[x] == x:
             return x
-        self.parent1[x] = self.findparent1(self.parent1[x])
-        return self.parent1[x]
+        Approximationalgo.find_parent_special[
+            x
+        ] = Approximationalgo.findfind_parent_special(
+            Approximationalgo.find_parent_special[x]
+        )
+        return Approximationalgo.find_parent_special[x]
 
-    def unionbyrank1(self, u, v):
-        a = self.findparent1(u)
-        b = self.findparent1(v)
+    @staticmethod
+    def unionbyrank1(u, v):
+        a = Approximationalgo.findfind_parent_special(u)
+        b = Approximationalgo.findfind_parent_special(v)
         if a != b:
-            if self.size1[a] > self.size1[b]:
-                self.parent1[b] = a
-                self.size1[a] = self.size1[a] + self.size1[b]
+            if Approximationalgo.size1[a] > Approximationalgo.size1[b]:
+                Approximationalgo.find_parent_special[b] = a
+                Approximationalgo.size1[a] = (
+                    Approximationalgo.size1[a] + Approximationalgo.size1[b]
+                )
             else:
-                self.parent1[a] = b
-                self.size1[b] = self.size1[a] + self.size1[b]
+                Approximationalgo.find_parent_special[a] = b
+                Approximationalgo.size1[b] = (
+                    Approximationalgo.size1[a] + Approximationalgo.size1[b]
+                )
 
-    def kruskal(self, noofvertices, F):
-        spanningtree = []
-        for i in range(noofvertices):
-            self.parent1[i] = i
-        for i in F:
-            x = i[0]
-            y = i[1]
-            if self.findparent1(x) != self.findparent1(y):
-                spanningtree.append([x, y])
-                self.unionbyrank1(x, y)
-        return spanningtree
+    @staticmethod
+    def kruskal(vertex_count, F):
+        spanning_tree = []
+        for i in range(vertex_count):
+            Approximationalgo.find_parent_special[i] = i
+        for edge in F:
+            x = edge[0]
+            y = edge[1]
+            if Approximationalgo.findfind_parent_special(
+                x
+            ) != Approximationalgo.findfind_parent_special(y):
+                spanning_tree.append([x, y])
+                Approximationalgo.unionbyrank1(x, y)
+        return spanning_tree
 
-    def solve(self, prob_in):
-
+    @staticmethod
+    def solve(prob_in):
+        Approximationalgo.reset()
         G = []
-        inputedges = []
+        edge_list = []
         prob_copy = prob_in.copy()
-        noofvertices = len(prob_copy)
-        for i in prob_copy.keys():
-            for j in prob_copy.get(i):
-                if j > i:
-                    inputedges.append([i, j])
+        vertex_count = len(prob_copy)
+        vertex_count += 1
+        for vertex, connecting_vertex in prob_copy.items():
+            for vertex_ in connecting_vertex:
+                if vertex_ > vertex:
+                    edge_list.append([vertex, vertex_])
 
-        noofedges = len(inputedges)
-        print(inputedges)
+        edge_count = len(edge_list)
+
         j = 0
         for i in range(100005):
             G.append([])
-        for i in range(noofedges):
-            x = inputedges[i]
+        for i in range(edge_count):
+            x = edge_list[i]
             G[x[0]].append(x[1])
             G[x[1]].append(x[0])
 
-        F = self.buildMaximallyLeafyForest(noofvertices, G)
+        F = Approximationalgo.buildMaximallyLeafyForest(vertex_count, G)
 
         verticesinF = []
 
-        for i in F:
-            verticesinF.append(i[0])
-            verticesinF.append(i[1])
+        for edge in F:
+            verticesinF.append(edge[0])
+            verticesinF.append(edge[1])
 
-        for i in range(noofvertices):
+        for i in range(vertex_count):
             for j in range(len(G[i])):
                 u = i
                 v = G[i][j]
@@ -230,22 +282,25 @@ class Approximationalgo:
                     F.append([u, v])
                     F.append([v, u])
 
-                elif self.findparent(u) != self.findparent(v):
+                elif Approximationalgo.findparent(u) != Approximationalgo.findparent(v):
                     F.append([u, v])
                     F.append([v, u])
 
-        result = self.kruskal(noofvertices, F)
+        result = Approximationalgo.kruskal(vertex_count, F)
 
         dict = {}
 
-        for i in result:
-            if dict.get(i[0]) == None:
-                dict.update({i[0]: [i[1]]})
-            else:
-                dict.get(i[0]).append(i[1])
+        for edge in result:
 
-            if dict.get(i[1]) == None:
-                dict.update({i[1]: [i[0]]})
+            if dict.get(edge[0]) == None:
+                dict.update({edge[0]: [edge[1]]})
             else:
-                dict.get(i[1]).append(i[0])
+                dict.get(edge[0]).append(edge[1])
+
+            if dict.get(edge[1]) == None:
+                dict.update({edge[1]: [edge[0]]})
+
+            else:
+                dict.get(edge[1]).append(edge[0])
+
         return dict
