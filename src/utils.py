@@ -1,5 +1,5 @@
 import sys
-from typing import List
+from typing import List, Tuple
 import numpy as np
 import networkx as nx
 from matplotlib import pyplot as plt
@@ -72,37 +72,33 @@ def read_input(input_filename: str) -> List[dict]:
 
 
 # Helper function for writing all solutions to output
-def write_output(adjacency_lists: List[dict], output_filename: str):
+def write_output(
+    best_solutions: List[Tuple[int, dict, str, int]], output_filename: str
+):
     """
     Writes output to file in output convention. Check the pdf for details.
 
     Args:
-        adjacency_lists:
+        best_solutions: List of (leaf_count, adjacency_list, algo_name, vertex_count)
         output_filename:
     """
 
     # Create storage for output
     all_data = []
     # Process all problems
-    for prob in adjacency_lists:
-        # Get number of leaves and edges
-        leaves = 0
-        edges = 0
-        for vert in prob:
-            if len(prob[vert]) == 1:
-                leaves += 1
-            edges += len(prob[vert])
-        edges //= 2  # We count each edge twice, so divide by 2
+    for solution in best_solutions:
+        leaf_count, adjacency_list, algo_name, vertex_count = solution
+        edge_count = vertex_count - 1
 
         # Remove duplicate edges
-        for vert in prob:
-            for item in prob[vert]:
-                prob[item].remove(vert)
+        for vert in adjacency_list:
+            for item in adjacency_list[vert]:
+                adjacency_list[item].remove(vert)
 
         # Put everything in the list for output
-        all_data.append((leaves, edges))
-        for vert in prob:
-            for item in prob[vert]:
+        all_data.append((leaf_count, edge_count))
+        for vert in adjacency_list:
+            for item in adjacency_list[vert]:
                 all_data.append((vert, item))
 
     # Format output as strings
@@ -160,3 +156,24 @@ def plot_graph_from_adjacency_list(dic_1: dict, dic_2: dict, title: str):
         create_graph_from_matrix(convert_adjacency_list_to_matrix(dic_2)),
         title=title,
     )
+
+
+def calculate_vertex_and_leaf_count(adjacency_list: dict) -> (int, int):
+    """
+    Args:
+        adjacency_list:
+
+    Returns:
+        vertex_count, leaf_count
+    """
+    leaf_count = 0
+    edge_count = 0
+    for vertex, vertex_edges in adjacency_list.items():
+        vertices_edge_count = len(vertex_edges)
+        if vertices_edge_count == 1:
+            leaf_count += 1
+        edge_count += vertices_edge_count
+    edge_count //= 2
+    vertex_count = edge_count + 1
+
+    return vertex_count, leaf_count

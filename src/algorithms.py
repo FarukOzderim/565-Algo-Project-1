@@ -19,6 +19,7 @@ class SimpleGreedy:
             prob_in: adjacency_list
 
         Returns:
+            adjacency_list
 
         """
         # Create a copy of the problem and get some metadata
