@@ -26,7 +26,7 @@ if __name__ == "__main__":
         edges_max = min(2000, num_verts * (num_verts - 1) // 2)
         num_edges = random.randrange(edges_min, edges_max + 1)
         all_data.append((num_verts, num_edges))
-        
+
         # Create list of all possible edges
         all_edges = []
         for i in range(num_verts - 1):
@@ -37,10 +37,10 @@ if __name__ == "__main__":
         vert_list = list(range(num_verts))
         random.shuffle(vert_list)
         for edge_idx in range(len(vert_list) - 1):
-            if vert_list[edge_idx] < vert_list[edge_idx+1]:
-                temp_edge = (vert_list[edge_idx], vert_list[edge_idx+1])
+            if vert_list[edge_idx] < vert_list[edge_idx + 1]:
+                temp_edge = (vert_list[edge_idx], vert_list[edge_idx + 1])
             else:
-                temp_edge = (vert_list[edge_idx+1], vert_list[edge_idx])
+                temp_edge = (vert_list[edge_idx + 1], vert_list[edge_idx])
             all_data.append(temp_edge)
             all_edges.remove(temp_edge)
 
