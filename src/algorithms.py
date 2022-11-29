@@ -82,8 +82,7 @@ class SimpleGreedy:
         return tree
 
 
-class Approximationalgo:
-
+class Heuristic:
     parent = list(
         np.zeros(
             100,
@@ -112,27 +111,27 @@ class Approximationalgo:
 
     @staticmethod
     def reset():
-        Approximationalgo.parent = list(
+        Heuristic.parent = list(
             np.zeros(
                 100,
             )
         )
-        Approximationalgo.d = list(
+        Heuristic.d = list(
             np.zeros(
                 100,
             )
         )
-        Approximationalgo.size = list(
+        Heuristic.size = list(
             np.zeros(
                 100,
             )
         )
-        Approximationalgo.find_parent_special = list(
+        Heuristic.find_parent_special = list(
             np.zeros(
                 100,
             )
         )
-        Approximationalgo.size1 = list(
+        Heuristic.size1 = list(
             np.zeros(
                 100,
             )
@@ -143,36 +142,30 @@ class Approximationalgo:
 
         v = int(v)
 
-        if v == Approximationalgo.parent[v]:
+        if v == Heuristic.parent[v]:
             return v
-        Approximationalgo.parent[v] = Approximationalgo.findparent(
-            Approximationalgo.parent[v]
-        )
-        return Approximationalgo.parent[v]
+        Heuristic.parent[v] = Heuristic.findparent(Heuristic.parent[v])
+        return Heuristic.parent[v]
 
     @staticmethod
     def unionbyrank(u, v):
-        a = Approximationalgo.findparent(u)
-        b = Approximationalgo.findparent(v)
+        a = Heuristic.findparent(u)
+        b = Heuristic.findparent(v)
         if a != b:
-            if Approximationalgo.size[a] > Approximationalgo.size[b]:
-                Approximationalgo.parent[b] = a
-                Approximationalgo.size[a] = (
-                    Approximationalgo.size[a] + Approximationalgo.size[b]
-                )
+            if Heuristic.size[a] > Heuristic.size[b]:
+                Heuristic.parent[b] = a
+                Heuristic.size[a] = Heuristic.size[a] + Heuristic.size[b]
             else:
-                Approximationalgo.parent[a] = b
-                Approximationalgo.size[b] = (
-                    Approximationalgo.size[a] + Approximationalgo.size[b]
-                )
+                Heuristic.parent[a] = b
+                Heuristic.size[b] = Heuristic.size[a] + Heuristic.size[b]
 
     @staticmethod
     def buildMaximallyLeafyForest(vertex_count, G):
         F = []
         for i in range(vertex_count):
-            Approximationalgo.d[i] = 0
-            Approximationalgo.parent[i] = i
-            Approximationalgo.size[i] = 1
+            Heuristic.d[i] = 0
+            Heuristic.parent[i] = i
+            Heuristic.size[i] = 1
 
         for i in range(vertex_count):
             s1 = []
@@ -182,69 +175,60 @@ class Approximationalgo:
             for j in range(len(G[i])):
                 u = G[i][j]
                 if (
-                    Approximationalgo.findparent(u) != Approximationalgo.findparent(v)
-                    and [u, Approximationalgo.findparent(u)] not in s1
+                    Heuristic.findparent(u) != Heuristic.findparent(v)
+                    and [u, Heuristic.findparent(u)] not in s1
                 ):
                     d1 = d1 + 1
-                    s1.append([u, Approximationalgo.findparent(u)])
+                    s1.append([u, Heuristic.findparent(u)])
 
-            if Approximationalgo.d[v] + d1 >= 3:
+            if Heuristic.d[v] + d1 >= 3:
                 for edge_pair in s1:
-
                     F.append([v, edge_pair[0]])
                     F.append([edge_pair[0], v])
-                    Approximationalgo.unionbyrank(v, edge_pair[1])
-                    Approximationalgo.d[edge_pair[0]] = (
-                        Approximationalgo.d[edge_pair[0]] + 1
-                    )
-                    Approximationalgo.d[v] = Approximationalgo.d[v] + 1
+                    Heuristic.unionbyrank(v, edge_pair[1])
+                    Heuristic.d[edge_pair[0]] = Heuristic.d[edge_pair[0]] + 1
+                    Heuristic.d[v] = Heuristic.d[v] + 1
         return F
 
     @staticmethod
     def findfind_parent_special(x):
-        if Approximationalgo.find_parent_special[x] == x:
+        if Heuristic.find_parent_special[x] == x:
             return x
-        Approximationalgo.find_parent_special[
-            x
-        ] = Approximationalgo.findfind_parent_special(
-            Approximationalgo.find_parent_special[x]
+        Heuristic.find_parent_special[x] = Heuristic.findfind_parent_special(
+            Heuristic.find_parent_special[x]
         )
-        return Approximationalgo.find_parent_special[x]
+        return Heuristic.find_parent_special[x]
 
     @staticmethod
     def unionbyrank1(u, v):
-        a = Approximationalgo.findfind_parent_special(u)
-        b = Approximationalgo.findfind_parent_special(v)
+        a = Heuristic.findfind_parent_special(u)
+        b = Heuristic.findfind_parent_special(v)
         if a != b:
-            if Approximationalgo.size1[a] > Approximationalgo.size1[b]:
-                Approximationalgo.find_parent_special[b] = a
-                Approximationalgo.size1[a] = (
-                    Approximationalgo.size1[a] + Approximationalgo.size1[b]
-                )
+            if Heuristic.size1[a] > Heuristic.size1[b]:
+                Heuristic.find_parent_special[b] = a
+                Heuristic.size1[a] = Heuristic.size1[a] + Heuristic.size1[b]
             else:
-                Approximationalgo.find_parent_special[a] = b
-                Approximationalgo.size1[b] = (
-                    Approximationalgo.size1[a] + Approximationalgo.size1[b]
-                )
+                Heuristic.find_parent_special[a] = b
+                Heuristic.size1[b] = Heuristic.size1[a] + Heuristic.size1[b]
 
     @staticmethod
     def kruskal(vertex_count, F):
         spanning_tree = []
         for i in range(vertex_count):
-            Approximationalgo.find_parent_special[i] = i
+            Heuristic.find_parent_special[i] = i
         for edge in F:
             x = edge[0]
             y = edge[1]
-            if Approximationalgo.findfind_parent_special(
+            if Heuristic.findfind_parent_special(
                 x
-            ) != Approximationalgo.findfind_parent_special(y):
+            ) != Heuristic.findfind_parent_special(y):
                 spanning_tree.append([x, y])
-                Approximationalgo.unionbyrank1(x, y)
+                Heuristic.unionbyrank1(x, y)
         return spanning_tree
 
     @staticmethod
     def solve(prob_in):
-        Approximationalgo.reset()
+        Heuristic.reset()
         G = []
         edge_list = []
         prob_copy = prob_in.copy()
@@ -265,7 +249,7 @@ class Approximationalgo:
             G[x[0]].append(x[1])
             G[x[1]].append(x[0])
 
-        F = Approximationalgo.buildMaximallyLeafyForest(vertex_count, G)
+        F = Heuristic.buildMaximallyLeafyForest(vertex_count, G)
 
         verticesinF = []
 
@@ -282,25 +266,28 @@ class Approximationalgo:
                     F.append([u, v])
                     F.append([v, u])
 
-                elif Approximationalgo.findparent(u) != Approximationalgo.findparent(v):
+                elif Heuristic.findparent(u) != Heuristic.findparent(v):
                     F.append([u, v])
                     F.append([v, u])
 
-        result = Approximationalgo.kruskal(vertex_count, F)
+        result = Heuristic.kruskal(vertex_count, F)
 
-        dict = {}
+        my_dict = {}
 
         for edge in result:
 
-            if dict.get(edge[0]) == None:
-                dict.update({edge[0]: [edge[1]]})
+            if my_dict.get(edge[0]) == None:
+                my_dict.update({edge[0]: [edge[1]]})
             else:
-                dict.get(edge[0]).append(edge[1])
+                my_dict.get(edge[0]).append(edge[1])
 
-            if dict.get(edge[1]) == None:
-                dict.update({edge[1]: [edge[0]]})
+            if my_dict.get(edge[1]) == None:
+                my_dict.update({edge[1]: [edge[0]]})
 
             else:
-                dict.get(edge[1]).append(edge[0])
+                my_dict.get(edge[1]).append(edge[0])
 
-        return dict
+        return my_dict
+
+
+ALGO_CLASS_LIST = [SimpleGreedy, Heuristic]

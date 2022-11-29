@@ -1,6 +1,6 @@
 from utils import read_input, write_output, plot_graph_from_adjacency_list
 from algorithms import SimpleGreedy
-from algorithms import Approximationalgo
+from algorithms import Heuristic
 import sys
 
 if __name__ == "__main__":
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     solution_list = []
 
     for prob in problem_list:
-        solution_list.append(Approximationalgo.solve(prob))
+        solution_list.append(Heuristic.solve(prob))
 
     # Print solved problems for sanity
     if DEBUG:
