@@ -157,5 +157,6 @@ def plot_graph(graph_1: nx.Graph, graph_2: nx.Graph, title: str = ""):
 def plot_graph_from_adjacency_list(dic_1: dict, dic_2: dict, title: str):
     plot_graph(
         create_graph_from_matrix(convert_adjacency_list_to_matrix(dic_1)),
-        create_graph_from_matrix(convert_adjacency_list_to_matrix(dic_2)), title=title
+        create_graph_from_matrix(convert_adjacency_list_to_matrix(dic_2)),
+        title=title,
     )

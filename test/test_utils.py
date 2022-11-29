@@ -1,5 +1,10 @@
-from src.utils import convert_adjacency_list_to_matrix, convert_adjacency_matrix_to_list, read_input, \
-    create_graph_from_matrix, get_adjacency_matrix_from_graph
+from src.utils import (
+    convert_adjacency_list_to_matrix,
+    convert_adjacency_matrix_to_list,
+    read_input,
+    create_graph_from_matrix,
+    get_adjacency_matrix_from_graph,
+)
 import pytest
 
 adjacency_list = read_input("inputs_outputs/hard.in")[0]
