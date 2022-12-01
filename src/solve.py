@@ -12,24 +12,23 @@ if __name__ == "__main__":
     DEBUG_PLOT_BEST_SOLUTION = False
     DEBUG_PLOT_ALL_SOLUTIONS = False
     DEBUG_PRINT_INPUTS_AND_OUTPUT_GRAPHS = False
+    DEBUG_PRINT_LEAF_COUNTS = False
 
     file_in = "../inputs_outputs/hard.in"
     file_out = "../inputs_outputs/hard.out"
 
-    if len(sys.argv) == 4:
-        file_in = sys.argv[1]
-        file_out = sys.argv[2]
-
     if len(sys.argv) >= 3:
-        file_in = sys.argv[1]
-        file_out = sys.argv[2]
+        file_in = "../inputs_outputs/{}".format(sys.argv[1])
+        file_out = "../inputs_outputs/{}".format(sys.argv[2])
 
     if len(sys.argv) >= 4:
-        DEBUG_PLOT_BEST_SOLUTION = sys.argv[3]
+        DEBUG_PLOT_BEST_SOLUTION = (sys.argv[3].lower() == 'true')
     if len(sys.argv) >= 5:
-        DEBUG_PLOT_ALL_SOLUTIONS = sys.argv[4]
+        DEBUG_PLOT_ALL_SOLUTIONS = (sys.argv[4].lower() == 'true')
     if len(sys.argv) >= 6:
-        DEBUG_PRINT_INPUTS_AND_OUTPUT_GRAPHS = sys.argv[5]
+        DEBUG_PRINT_INPUTS_AND_OUTPUT_GRAPHS = (sys.argv[5].lower() == 'true')
+    if len(sys.argv) >= 7:
+        DEBUG_PRINT_LEAF_COUNTS = (sys.argv[6].lower() == 'true')
 
     problem_list = read_input(file_in)
 
@@ -39,7 +38,7 @@ if __name__ == "__main__":
     for index, prob in enumerate(problem_list):
         best_solution_pack = (-1, {}, "", 0)
         for algo in ALGO_CLASS_LIST:
-            solution_adjacency_list = ALGO_CLASS_LIST[0].solve(prob)
+            solution_adjacency_list = algo.solve(prob)
             vertex_count, leaf_count = calculate_vertex_and_leaf_count(
                 solution_adjacency_list
             )
@@ -57,6 +56,9 @@ if __name__ == "__main__":
                     solution_adjacency_list,
                     title=f"{algo.__name__} Solution {index}, leaf_count: {leaf_count}",
                 )
+
+            if DEBUG_PRINT_LEAF_COUNTS:
+                print("Problem: {prob_num:>03} --- Method: {alg_name:>12} --- Leaves: {leaf_num:>2}".format(prob_num = index, alg_name = algo.__name__, leaf_num = leaf_count))
 
         solution_list.append(best_solution_pack)
         if DEBUG_PLOT_BEST_SOLUTION:
