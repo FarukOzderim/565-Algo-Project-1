@@ -42,7 +42,7 @@ class SimpleGreedy:
                 root_ecount = len(prob_copy[i])
         candidates.append(root_vert)
 
-        # Keep adding to tree until we run out
+        # Keep adding to tree until we run out of candidates
         while len(candidates) > 0:
             # Get ideal candidate and remove from list
             best = candidates[0]
@@ -79,8 +79,90 @@ class SimpleGreedy:
             # print("Candidate list 2: {}".format(candidates))
 
         # Return the spanning tree
-
         return tree
+
+
+class ScanGreedy:
+    @staticmethod
+    def solve(prob_in: dict) -> dict:
+        """
+        Modification to greedy algorithm, similar to BFS.
+        Like SimpleGreedy but check all possible root nodes
+
+        Args:
+            prob_in: adjacency_list
+
+        Returns:
+            adjacency_list
+
+        """
+         # Create a copy of the problem and get some metadata
+        prob_copy = prob_in.copy()
+        vertex_count = len(prob_copy)
+
+        # Create best results storage
+        best_tree = {}
+        best_leaves = -1
+
+        # Iterate over all possible root nodes
+        for root_vert in range(vertex_count):
+            # Create an empty tree to build
+            tree = {}
+            for i in range(vertex_count):
+                tree[i] = []
+            in_tree = [False for i in range(vertex_count)]
+            
+            # Need a list of candidates
+            candidates = []
+            candidates.append(root_vert)
+
+            # Keep adding to tree until we run out of candidates
+            while len(candidates) > 0:
+                # Get ideal candidate and remove from list
+                best = candidates[0]
+                best_ecount = len(prob_copy[best])
+                for i in candidates:
+                    if len(prob_copy[i]) > best_ecount:
+                        best = i
+                        best_ecount = len(prob_copy[i])
+                candidates.remove(best)
+                # print("Ideal candidate: {}".format(best))
+
+                # Add ideal candidate's children to tree and list of candidates
+                best_elist = prob_copy[best]
+                in_tree[best] = True
+                for item in best_elist:
+                    if not in_tree[item]:
+                        in_tree[item] = True
+                        tree[best].append(item)
+                        tree[item].append(best)
+                        candidates.append(item)
+                # print("Candidate list 1: {}".format(candidates))
+
+                # Prune candidates with no valid children
+                c_copy = candidates.copy()
+                for item in c_copy:
+                    adj_list = prob_copy[item]
+                    has_valid = False
+                    for child in adj_list:
+                        if not in_tree[child]:
+                            has_valid = True
+                            continue
+                    if not has_valid:
+                        candidates.remove(item)
+                # print("Candidate list 2: {}".format(candidates))
+            
+            # If current solution is better than existing best, replace
+            num_leaves = 0
+            for vert in range(vertex_count):
+                if len(tree[vert]) == 1:
+                    num_leaves += 1
+            if num_leaves > best_leaves:
+                best_leaves = num_leaves
+                best_tree = tree.copy()
+
+        # Return the spanning tree
+        return best_tree
 
 
 class Heuristic:
@@ -291,4 +373,6 @@ class Heuristic:
         return my_dict
 
 
-ALGO_CLASS_LIST = [SimpleGreedy, Heuristic]
+#TODO: Add Heuristic back in once all errors with it are fixed
+#ALGO_CLASS_LIST = [SimpleGreedy, ScanGreedy, Heuristic]
+ALGO_CLASS_LIST = [SimpleGreedy, ScanGreedy]
