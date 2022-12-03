@@ -373,6 +373,6 @@ class Heuristic:
         return my_dict
 
 
-# Add Heuristic back in once all errors with it are fixed
+#TODO: Add Heuristic back in once all errors with it are fixed
 #ALGO_CLASS_LIST = [SimpleGreedy, ScanGreedy, Heuristic]
 ALGO_CLASS_LIST = [SimpleGreedy, ScanGreedy]
