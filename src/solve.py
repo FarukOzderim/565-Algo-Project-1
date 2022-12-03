@@ -18,9 +18,8 @@ if __name__ == "__main__":
     file_out = "../inputs_outputs/hard.out"
 
     if len(sys.argv) >= 3:
-        file_in = "../inputs_outputs/{}".format(sys.argv[1])
-        file_out = "../inputs_outputs/{}".format(sys.argv[2])
-
+        file_in = sys.argv[1]
+        file_out = sys.argv[2]
     if len(sys.argv) >= 4:
         DEBUG_PLOT_BEST_SOLUTION = (sys.argv[3].lower() == 'true')
     if len(sys.argv) >= 5:
@@ -58,7 +57,7 @@ if __name__ == "__main__":
                 )
 
             if DEBUG_PRINT_LEAF_COUNTS:
-                print("Problem: {prob_num:>03} --- Method: {alg_name:>12} --- Leaves: {leaf_num:>2}".format(prob_num = index, alg_name = algo.__name__, leaf_num = leaf_count))
+                print(f"Problem: {index:>03} --- Method: {algo.__name__:>12} --- Leaves: {leaf_count:>2}")
 
         solution_list.append(best_solution_pack)
         if DEBUG_PLOT_BEST_SOLUTION:
