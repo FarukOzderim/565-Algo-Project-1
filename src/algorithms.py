@@ -85,27 +85,27 @@ class SimpleGreedy:
 class Heuristic:
     parent = list(
         np.zeros(
-            100,
+            100000,
         )
     )
     d = list(
         np.zeros(
-            100,
+            100000,
         )
     )
     size = list(
         np.zeros(
-            100,
+            100000,
         )
     )
     find_parent_special = list(
         np.zeros(
-            100,
+            100000,
         )
     )
     size1 = list(
         np.zeros(
-            100,
+            100000,
         )
     )
 
@@ -113,27 +113,27 @@ class Heuristic:
     def reset():
         Heuristic.parent = list(
             np.zeros(
-                100,
+                100000,
             )
         )
         Heuristic.d = list(
             np.zeros(
-                100,
+                100000,
             )
         )
         Heuristic.size = list(
             np.zeros(
-                100,
+                100000,
             )
         )
         Heuristic.find_parent_special = list(
             np.zeros(
-                100,
+                100000,
             )
         )
         Heuristic.size1 = list(
             np.zeros(
-                100,
+                100000,
             )
         )
 
