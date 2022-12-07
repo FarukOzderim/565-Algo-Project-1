@@ -25,9 +25,9 @@ pytest test
 # Run
 
 ```
-python3 src/solve.py inputs_outputs/hard.in inputs_outputs/hard.out True True True
+python3 src/solve.py inputs_outputs/hard.in inputs_outputs/hard.out True True True True
 ```
 
 **Configuration**: 
 
-`python3 filename input output plot_best_solutions plot_all_solutions print_all_input_outputs`
+`python3 filename input output plot_best_solutions plot_all_solutions print_all_input_outputs print_leaf_count`

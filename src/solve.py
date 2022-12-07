@@ -57,7 +57,7 @@ if __name__ == "__main__":
                 )
 
             if DEBUG_PRINT_LEAF_COUNTS:
-                print(f"Problem: {index:>03} --- Method: {algo.__name__:>12} --- Leaves: {leaf_count:>2}")
+                print(f"Problem: {index:>03} - Method: {algo.__name__:>12} - Leaves: {leaf_count:>2}, Ratio: %{round(leaf_count/vertex_count*100)}")
 
         solution_list.append(best_solution_pack)
         if DEBUG_PLOT_BEST_SOLUTION:
